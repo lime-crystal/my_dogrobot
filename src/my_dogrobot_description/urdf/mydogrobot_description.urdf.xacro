@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<robot name="mydogrobot"
+    xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:property name="body_zoffset" value="0.3" />
+    <xacro:property name="head_xoffset" value="0.02" />
+    <xacro:property name="head_xpos" value="0.205" />
+    <xacro:property name="head_zpos" value="${body_zoffset + 0.005}" />
+    <xacro:property name="leg1_zoffset" value="0" />
+    <xacro:property name="leg1_hind_xpos" value="0.0075" />
+    <xacro:property name="leg1_fore_xpos" value="0.1425" /> 
+    <xacro:property name="leg1_ypos" value="0.0385" />
+    <xacro:property name="leg1_zpos" value="${body_zoffset}" />
+    <xacro:property name="leg2_zoffset" value="0" />
+    <xacro:property name="leg2_xpos" value="0.01" />
+    <xacro:property name="leg2_ypos" value="0.012" />
+    <xacro:property name="leg2_zpos" value="-0.025" />
+    <xacro:property name="foot_zoffset" value="0" />
+    <xacro:property name="foot_xpos" value="0" />
+    <xacro:property name="foot_ypos" value="-0.007" />
+    <xacro:property name="foot_zpos" value="-0.055" />
+
+    <!--色設定-->
+    <material name="red">
+        <color rgba="1.0 0.0 0.0 1.0"/>
+    </material>
+    <material name="blue">
+        <color rgba="0.0 0.0 1.0 1.0"/>
+    </material>
+    <material name="yellow">
+        <color rgba="0.0 1.0 0.0 1.0"/>
+    </material>
+
+    <!--リンク作成マクロ-->
+    <xacro:macro name="part_macro" params="suffix url xyz rpy color mass">
+        <link name="${suffix}_link">
+            <visual>
+                <geometry>
+                    <mesh filename="${url}"/>
+                </geometry>
+                <origin xyz="${xyz}" rpy="${rpy}"/>
+                <material name="${color}"/>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="${url}"/>
+                </geometry>
+                <origin xyz="${xyz}" rpy="${rpy}"/>
+            </collision>
+            <inertial>
+                <mass value="${mass}"/>
+                <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+            </inertial>
+        </link>
+    </xacro:macro>
+
+    <!--ジョイント設定マクロ-->
+    <xacro:macro name="joint_macro" params="suffix parent child a_xyz o_xyz">
+        <joint name="${suffix}_joint" type="revolute">
+            <parent link="${parent}"/>
+            <child link="${child}"/>
+            <axis xyz="${a_xyz}"/>
+            <origin xyz="${o_xyz}"/>
+            <limit lower="-1.57" upper="1.57" effort="100" velocity="1.57"/>
+        </joint>
+    </xacro:macro>
+
+    <!--各リンク作製-->
+    <xacro:part_macro suffix="body" url="package://my_dogrobot_description/stl/body.stl" xyz="0 0 ${body_zoffset}" rpy="0 0 0" color="yellow" mass="100"/>
+    <xacro:part_macro suffix="head" url="package://my_dogrobot_description/stl/head.stl" xyz="${head_xoffset} 0 0" rpy="0 0 -1.57" color="red" mass="100"/>
+    <xacro:part_macro suffix="leg1-hind-left" url="package://my_dogrobot_description/stl/leg1.stl" xyz="0 0 ${leg1_zoffset}" rpy="0 0 -1.57" color="red" mass="100"/>
+    <xacro:part_macro suffix="leg1-hind-right" url="package://my_dogrobot_description/stl/leg1.stl" xyz="0 0 ${leg1_zoffset}" rpy="0 0 -1.57" color="red" mass="100"/>
+    <xacro:part_macro suffix="leg1-fore-left" url="package://my_dogrobot_description/stl/leg1.stl" xyz="0 0 ${leg1_zoffset}" rpy="0 0 -1.57" color="red" mass="100"/>
+    <xacro:part_macro suffix="leg1-fore-right" url="package://my_dogrobot_description/stl/leg1.stl" xyz="0 0 ${leg1_zoffset}" rpy="0 0 -1.57" color="red" mass="100"/>
+    <xacro:part_macro suffix="leg2-hind-left" url="package://my_dogrobot_description/stl/leg2-l.stl" xyz="0 0 ${leg2_zoffset}" rpy="0 0 1.57" color="blue" mass="100"/>
+    <xacro:part_macro suffix="leg2-hind-right" url="package://my_dogrobot_description/stl/leg2-r.stl" xyz="0 0 ${leg2_zoffset}" rpy="0 0 1.57" color="blue" mass="100"/>
+    <xacro:part_macro suffix="leg2-fore-left" url="package://my_dogrobot_description/stl/leg2-l.stl" xyz="0 0 ${leg2_zoffset}" rpy="0 0 1.57" color="blue" mass="100"/>
+    <xacro:part_macro suffix="leg2-fore-right" url="package://my_dogrobot_description/stl/leg2-r.stl" xyz="0 0 ${leg2_zoffset}" rpy="0 0 1.57" color="blue" mass="100"/>
+    <xacro:part_macro suffix="foot-hind-left" url="package://my_dogrobot_description/stl/foot-l.stl" xyz="0 0 ${foot_zoffset}" rpy="0 0 1.57" color="yellow" mass="100"/>
+    <xacro:part_macro suffix="foot-hind-right" url="package://my_dogrobot_description/stl/foot-r.stl" xyz="0 0 ${foot_zoffset}" rpy="0 0 1.57" color="yellow" mass="100"/>
+    <xacro:part_macro suffix="foot-fore-left" url="package://my_dogrobot_description/stl/foot-l.stl" xyz="0 0 ${foot_zoffset}" rpy="0 0 1.57" color="yellow" mass="100"/>
+    <xacro:part_macro suffix="foot-fore-right" url="package://my_dogrobot_description/stl/foot-r.stl" xyz="0 0 ${foot_zoffset}" rpy="0 0 1.57" color="yellow" mass="100"/>
+
+    <!--ジョイント設定-->
+    <xacro:joint_macro suffix="head" parent="body_link" child="head_link" a_xyz="0 1 0" o_xyz="${head_xpos} 0 ${head_zpos}"/>
+    <xacro:joint_macro suffix="leg1-hind-left" parent="body_link" child="leg1-hind-left_link" a_xyz="1 0 0" o_xyz="${leg1_hind_xpos} ${leg1_ypos} ${leg1_zpos}"/>
+    <xacro:joint_macro suffix="leg1-hind-right" parent="body_link" child="leg1-hind-right_link" a_xyz="1 0 0" o_xyz="${leg1_hind_xpos} ${-1 * leg1_ypos} ${leg1_zpos}"/>
+    <xacro:joint_macro suffix="leg1-fore-left" parent="body_link" child="leg1-fore-left_link" a_xyz="1 0 0" o_xyz="${leg1_fore_xpos} ${leg1_ypos} ${leg1_zpos}"/>
+    <xacro:joint_macro suffix="leg1-fore-right" parent="body_link" child="leg1-fore-right_link" a_xyz="1 0 0" o_xyz="${leg1_fore_xpos} ${-1 * leg1_ypos} ${leg1_zpos}"/>
+    <xacro:joint_macro suffix="leg2-hind-left" parent="leg1-hind-left_link" child="leg2-hind-left_link" a_xyz="0 1 0" o_xyz="${leg2_xpos} ${leg2_ypos} ${leg2_zpos}"/>
+    <xacro:joint_macro suffix="leg2-hind-right" parent="leg1-hind-right_link" child="leg2-hind-right_link" a_xyz="0 1 0" o_xyz="${leg2_xpos} ${-1 * leg2_ypos} ${leg2_zpos}"/>
+    <xacro:joint_macro suffix="leg2-fore-left" parent="leg1-fore-left_link" child="leg2-fore-left_link" a_xyz="0 1 0" o_xyz="${leg2_xpos} ${leg2_ypos} ${leg2_zpos}"/>
+    <xacro:joint_macro suffix="leg2-fore-right" parent="leg1-fore-right_link" child="leg2-fore-right_link" a_xyz="0 1 0" o_xyz="${leg2_xpos} ${-1 * leg2_ypos} ${leg2_zpos}"/>
+    <xacro:joint_macro suffix="foot-hind-left" parent="leg2-hind-left_link" child="foot-hind-left_link" a_xyz="0 1 0" o_xyz="${foot_xpos} ${foot_ypos} ${foot_zpos}"/>
+    <xacro:joint_macro suffix="foot-hind-right" parent="leg2-hind-right_link" child="foot-hind-right_link" a_xyz="0 1 0" o_xyz="${foot_xpos} ${-1 * foot_ypos} ${foot_zpos}"/>
+    <xacro:joint_macro suffix="foot-fore-left" parent="leg2-fore-left_link" child="foot-fore-left_link" a_xyz="0 1 0" o_xyz="${foot_xpos} ${foot_ypos} ${foot_zpos}"/>
+    <xacro:joint_macro suffix="foot-fore-right" parent="leg2-fore-right_link" child="foot-fore-right_link" a_xyz="0 1 0" o_xyz="${foot_xpos} ${-1 * foot_ypos} ${foot_zpos}"/>
+
+  <!--シミュレーション用記述-->
+  <ros2_control name="GazeboSimSystem" type="system">
+    <hardware>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+    <joint name="head_link">
+      <command_interface name="position">
+        <param name="min">-1.57</param>
+        <param name="max">1.57</param>
+      </command_interface>
+      <state_interface name="position">
+        <param name="initial_value">0</param>
+      </state_interface>
+      <state_interface name="velocity"/>
+      <state_interface name="effort"/>
+    </joint>
+  </ros2_control>
+
+   <gazebo>
+    Joint state publisher -->
+    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>$(find mydogrobot_controll)/config/mydogrobot_controller_position.yaml</parameters>
+    </plugin>
+  </gazebo>
+
+</robot>
